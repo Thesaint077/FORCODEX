@@ -1,6 +1,6 @@
 # CreatorBridge · first booking milestone
 
-A runnable, persistent Nigerian creator–brand marketplace. This is a **sandbox development application**, not a live financial service. The attached PRD was read before implementation; its original PDF is included in the downloadable milestone archive. The approved logo is used unaltered at `public/creatorbridge-logo.png`.
+A runnable, persistent Nigerian creator–brand marketplace. This is a **sandbox development application**, not a live financial service. The attached PRD was read before implementation; its original PDF is included in `docs/CreatorBridge_PRD.pdf`. The approved logo is used unaltered at `public/creatorbridge-logo.png`.
 
 ## Run locally
 
@@ -95,3 +95,7 @@ See `docs/VERIFICATION.md` for recorded results and `docs/PRD_COVERAGE.md` for r
 Prioritise production readiness before live campaigns: approved payment-partner/legal model; verified hosted checkout and webhook reconciliation; production private storage with scanning, resumable uploads and signed downloads; transactional mail; provider-backed identity/business/bank checks; legal contract/disclosure/ARCON review; MFA and risk controls; monitoring, backups and independent security/accessibility review.
 
 Also pending: role-management/invitations, full audience evidence, shortlists, shipping tracking, granular multi-milestone payments, counteroffer versions, timestamped video feedback, dispute resolution/refunds, notification centre, reporting/UTMs, publication proof and privacy export/deletion. The current exception action pauses a booking for operations; it does not resolve or refund it. The coverage table distinguishes partial implementations from the full PRD.
+
+## Production authentication email
+
+The Resend adapter for verification and password recovery is implemented. Follow `docs/EMAIL_SETUP.md` to configure a verified sending domain, `EMAIL_PROVIDER`, `EMAIL_FROM` and a Sensitive `RESEND_API_KEY` in Vercel. Until those settings are supplied, live email remains disabled. Integration tests exercise provider success/failure and configuration safety without sending real email.
