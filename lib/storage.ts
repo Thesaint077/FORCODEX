@@ -1,0 +1,5 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {id} from './auth';
+export function storageRoot(){if(process.env.NODE_ENV==='production')throw new Error('Local private storage is disabled in production. Configure an approved private storage adapter.');return path.resolve(process.env.STORAGE_PATH||'.data/assets');}
+export async function store(file:File){if(file.size>25*1024*1024||file.size<1)throw new Error('Select a file up to 25 MB.');const buf=Buffer.from(await file.arrayBuffer());let mime='';if(buf.subarray(0,5).toString()==='%PDF-')mime='application/pdf';else if(buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff)mime='image/jpeg';else if(buf.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))mime='image/png';else if(buf.subarray(4,8).toString()==='ftyp')mime='video/mp4';if(!mime||file.type!==mime)throw new Error('Supported development uploads: valid PDF, PNG, JPEG or MP4.');const key=id();await fs.mkdir(storageRoot(),{recursive:true});await fs.writeFile(path.join(storageRoot(),key),buf,{flag:'wx'});return {key,mime,size:buf.length,name:path.basename(file.name).replace(/[^a-zA-Z0-9._ -]/g,'_').slice(0,150)};}

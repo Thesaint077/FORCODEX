@@ -1,0 +1,7 @@
+import {DB,one} from './db';
+import {Booking,Org,User,Brief} from './models';
+import {allowedMember} from './domain';
+export async function orgs(d:DB,u:User){return (await d.query<Org>('SELECT o.*,m.role FROM organizations o JOIN memberships m ON m.org_id=o.id WHERE m.user_id=$1',[u.id])).rows;}
+export async function orgAccess(d:DB,u:User,orgId:string,action='read'){const m=await one<{role:string}>(d,'SELECT role FROM memberships WHERE user_id=$1 AND org_id=$2',[u.id,orgId]);if(!m||!allowedMember(m.role,action))throw new Error('Not permitted in this workspace.');}
+export async function bookingAccess(d:DB,u:User,bookingId:string,action='read'){const b=await one<Booking>(d,'SELECT * FROM bookings WHERE id=$1',[bookingId]);if(!b)throw new Error('Booking unavailable.');if(u.role==='operations'){if(action!=='read'&&action!=='compliance')throw new Error('Operations cannot move funds.');}else if(u.role==='creator'){if(b.creator_id!==u.id||!['read','sign','submit','message','dispute'].includes(action))throw new Error('Not permitted.');}else await orgAccess(d,u,b.org_id,action==='message'?'read':action);return b;}
+export async function briefAccess(d:DB,u:User,briefId:string,action='read'){const b=await one<Brief>(d,'SELECT * FROM briefs WHERE id=$1',[briefId]);if(!b)throw new Error('Brief unavailable.');if(u.role==='brand')await orgAccess(d,u,b.org_id,action);else if(u.role==='creator'&&b.status!=='published')throw new Error('Brief unavailable.');return b;}

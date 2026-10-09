@@ -1,6 +1,6 @@
 # CreatorBridge · first booking milestone
 
-A runnable, persistent Nigerian creator–brand marketplace. This is a **sandbox development application**, not a live financial service. The attached PRD was read before implementation; its original PDF is included in `docs/CreatorBridge_PRD.pdf`. The approved logo is used unaltered at `public/creatorbridge-logo.png`.
+A runnable, persistent Nigerian creator–brand marketplace. This is a **sandbox development application**, not a live financial service. The attached PRD was read before implementation; its original PDF is included in the downloadable milestone archive. The approved logo is used unaltered at `public/creatorbridge-logo.png`.
 
 ## Run locally
 

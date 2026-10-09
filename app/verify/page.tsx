@@ -1,0 +1,2 @@
+import {ActionForm} from '@/components/form';
+export default async function Verify({searchParams}:{searchParams:Promise<{token?:string}>}){const {token}=await searchParams;return <section className="auth"><p className="eyebrow">Confirm your email</p><h1>One step closer.</h1><p className="lead">Confirm your email to publish briefs or respond to opportunities.</p><ActionForm action="verify" data={{token:token||''}} label="Verify email"><p className="hint">One-use link · expires after one hour.</p></ActionForm></section>;}

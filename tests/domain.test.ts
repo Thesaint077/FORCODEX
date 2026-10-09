@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fee,allowedMember,guardTransition} from '../lib/domain';
+import {Booking,User} from '../lib/models';
+const user:User={id:'creator',name:'Test',email:'test@example.test',role:'creator',email_verified:true};
+const booking={creator_id:'creator',funding:'unfunded',delivery:'awaiting_contract',compliance:'pending_review',payout:'not_eligible',brand_signed_at:null,creator_signed_at:null,revision_count:0,disputed:false} as Booking;
+test('integer kobo calculation preserves 15% and rounding',()=>{assert.equal(fee(25000000),3750000);assert.equal(fee(101),15);assert.equal(fee(25000000,1000),2500000);assert.throws(()=>fee(-1));assert.throws(()=>fee(1.1));assert.throws(()=>fee(Number.MAX_SAFE_INTEGER));});
+test('role permissions separate editor approver finance and viewer',()=>{assert.equal(allowedMember('viewer','fund'),false);assert.equal(allowedMember('editor','approve'),false);assert.equal(allowedMember('finance','fund'),true);assert.equal(allowedMember('approver','approve'),true);assert.equal(allowedMember('owner','unknown'),false);});
+test('production cannot start without signatures and funding',()=>{assert.throws(()=>guardTransition(booking,'fund',user));assert.throws(()=>guardTransition(booking,'submit',user));assert.doesNotThrow(()=>guardTransition({...booking,funding:'funded',delivery:'in_production'},'submit',user));assert.throws(()=>guardTransition({...booking,creator_id:'other',funding:'funded',delivery:'in_production'},'submit',user));});
+test('review and payout have independent prerequisites',()=>{assert.throws(()=>guardTransition(booking,'approve',user));assert.throws(()=>guardTransition({...booking,delivery:'accepted',funding:'funded'},'payout',user));assert.doesNotThrow(()=>guardTransition({...booking,delivery:'accepted',funding:'funded',compliance:'sandbox_cleared'},'payout',user));assert.throws(()=>guardTransition({...booking,delivery:'accepted',funding:'funded',compliance:'sandbox_cleared',disputed:true},'payout',user));assert.throws(()=>guardTransition({...booking,delivery:'in_review',revision_count:2},'revision',user));});
