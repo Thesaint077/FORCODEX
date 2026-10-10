@@ -1,0 +1,9 @@
+import Link from 'next/link';
+import {db} from '@/lib/db';
+import {searchPublicDirectory} from '@/lib/directory';
+import {Heading,Badge,Empty} from '@/components/ui';
+export default async function Discover({searchParams}:{searchParams:Promise<{q?:string;role?:string}>}){
+ const q=await searchParams;const role=['creator','brand'].includes(q.role||'')?q.role!:'';
+ const results=await searchPublicDirectory(await db(),q.q||'',role);
+ return <div className="container"><Heading eyebrow="The CreatorBridge directory" title="Find your next connection.">Search public creators and brands by name or username.</Heading><form className="people-search" method="get"><label>Name or username<input type="search" name="q" defaultValue={q.q||''} placeholder="Search a name or @username" maxLength={120}/></label><label>Account type<select name="role" defaultValue={role}><option value="">Creators & brands</option><option value="creator">Creators</option><option value="brand">Brands</option></select></label><button className="button" type="submit">Search</button><Link className="link" href="/discover">Clear</Link></form><p className="hint">{results.length} {results.length===1?'match':'matches'}{results.length===100?' · first 100 results; narrow your search':''} · Only public profiles are shown.</p><div className="grid">{results.map(r=><article className="card" key={r.id}><Badge>{r.role==='brand'?'Brand':'Creator'}</Badge><h2 className="directory-name">{r.name}</h2>{r.username&&<p className="username">@{r.username}</p>}<p className="muted">{r.role==='creator'?[r.city,r.service].filter(Boolean).join(' · '):'Explore this brand’s published briefs.'}</p><Link className="button secondary small" href={r.role==='creator'?'/creators/'+r.id:'/brands/'+r.username}>View {r.role==='creator'?'profile':'brand'}</Link></article>)}</div>{!results.length&&<Empty title="No public matches yet">Try a different name, username or account type.</Empty>}</div>;
+}

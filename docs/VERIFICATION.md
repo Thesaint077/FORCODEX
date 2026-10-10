@@ -31,3 +31,11 @@ Screenshots and the machine-readable browser summary are included in `test-resul
 ## Limits of these checks
 
 External managed PostgreSQL was not available for adapter verification. Live payment, identity, storage, mail and regulatory providers are intentionally absent. Browser testing is not an independent security audit, load test or full WCAG certification. Test data, PDF fixture and verification reviews are fictional. All financial records are simulations; no real money moved.
+
+## Profile, discovery, theme and layout update - 10 October 2026
+
+- Lint, TypeScript and production build passed.
+- 21 tests passed, including case-insensitive username uniqueness, transaction rollback on conflicts, own-account name updates, private-profile exclusion, brand directory opt-in, role filters and literal wildcard handling.
+- Browser verification completed the simulated booking journey and checked creator display-name persistence through the real profile form, public username search, brand visibility and duplicate handle errors.
+- A separate production-build browser run passed 7 pages at 360, 390, 768, 1024 and 1440 pixels in both system light and dark modes, without horizontal overflow or JavaScript errors. Reduced-motion behaviour was verified.
+- Production Neon migration 002 added usernames and default-private brand directory visibility without replacing accounts, campaigns or bookings.

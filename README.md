@@ -99,3 +99,13 @@ Also pending: role-management/invitations, full audience evidence, shortlists, s
 ## Production authentication email
 
 The Resend adapter for verification and password recovery is implemented. Follow `docs/EMAIL_SETUP.md` to configure a verified sending domain, `EMAIL_PROVIDER`, `EMAIL_FROM` and a Sensitive `RESEND_API_KEY` in Vercel. Until those settings are supplied, live email remains disabled. Integration tests exercise provider success/failure and configuration safety without sending real email.
+
+## Profile identity, search and appearance
+
+Creator profile editing now saves the display name and optional unique username in the same transaction as profile details. Account settings at `/settings` let brands and creators update these details. Handles use 3–30 letters, numbers or underscores and are case-insensitive. Existing accounts can add a username; emails remain private.
+
+`/discover` searches public creators and opt-in brands by name or username, with account-type filters. Creator discovery also has a name/username search. Brands must enable directory visibility and add a username in Account settings before appearing; brand pages show published brief summaries only. Private profiles, internal operations accounts and private workspace records are excluded.
+
+Migrations now run in filename order and skip versions recorded in migration history. Apply `npm run db:migrate` before deploying this update; `002_usernames.sql` adds nullable usernames, a unique index and a default-private brand directory flag without replacing existing data.
+
+The interface follows `prefers-color-scheme` automatically. Dashboard booking KPIs use larger, high-contrast cards. Entrance and hover motion honours `prefers-reduced-motion`. `tests/identity.test.ts` verifies username uniqueness, own-account updates and public-directory privacy; `node scripts/upgrade-browser-check.mjs` covers the booking workflow, profile edits, directory consent, light/dark modes and layouts at 360, 390, 768, 1024 and 1440 pixels. Browser checks use fictional isolated data.
