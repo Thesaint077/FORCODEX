@@ -3,9 +3,10 @@ import Image from 'next/image';
 import {ReactNode} from 'react';
 import {currentUser} from '@/lib/auth';
 import {ActionForm} from './form';
+import {PasswordField} from './password-field';
 import {ArrowUpRight,Layers,Search,Briefcase,ShieldCheck,Menu} from 'lucide-react';
 export function Badge({children,tone='neutral'}:{children:ReactNode;tone?:string}){return <span className={'badge '+tone}>{children}</span>;}
-export function Field({name,label,type='text',defaultValue='',required=true,placeholder,min}:{name:string;label:string;type?:string;defaultValue?:string|number;required?:boolean;placeholder?:string;min?:string}){return <label>{label}<input name={name} type={type} defaultValue={defaultValue} required={required} placeholder={placeholder} min={min} step={type==='number'?'0.01':undefined}/></label>;}
+export function Field({name,label,type='text',defaultValue='',required=true,placeholder,min}:{name:string;label:string;type?:string;defaultValue?:string|number;required?:boolean;placeholder?:string;min?:string}){if(type==='password')return <PasswordField name={name} label={label} defaultValue={defaultValue} required={required} placeholder={placeholder}/>;return <label>{label}<input name={name} type={type} defaultValue={defaultValue} required={required} placeholder={placeholder} min={min} step={type==='number'?'0.01':undefined}/></label>;}
 export function Area({name,label,defaultValue='',required=true}:{name:string;label:string;defaultValue?:string;required?:boolean}){return <label>{label}<textarea name={name} defaultValue={defaultValue} required={required}/></label>;}
 export function Select({name,label,options,defaultValue}:{name:string;label:string;options:string[];defaultValue?:string}){return <label>{label}<select name={name} defaultValue={defaultValue}>{options.map(o=><option key={o} value={o}>{o}</option>)}</select></label>;}
 export function Heading({eyebrow,title,children,action}:{eyebrow:string;title:string;children?:ReactNode;action?:ReactNode}){return <header className="page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{children&&<p className="lead">{children}</p>}</div>{action}</header>;}
